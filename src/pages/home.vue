@@ -56,9 +56,4 @@ div {
         line-height: 620px;
     }
 }
-
-
-// body>.el-container {
-//     margin-bottom: 40px;
-// }
 </style>

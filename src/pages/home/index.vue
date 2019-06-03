@@ -1,7 +1,13 @@
 <template>
     <div>
         <el-container>
-            <el-header>Header</el-header>
+            <el-header>
+                <img src="./image/logo.svg" alt="">
+                <div>
+                    <span id="user">冀晶晶</span>
+                    <el-button type="text" @click="dialogFormVisible = true"><i class="el-icon-setting"></i></el-button>
+                </div>
+            </el-header>
             <el-container style="height: 500px; border: 1px solid #eee;">
                 <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
                     <el-menu :default-openeds="['1', '3']">
@@ -24,12 +30,62 @@
                 </el-main>
             </el-container>
         </el-container>
+        <el-dialog title="人员信息" :visible.sync="dialogFormVisible" width="35%">
+            <el-form :model="form">
+                <el-form-item label="姓名" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="性别" :label-width="formLabelWidth">
+                    <el-select v-model="form.region" placeholder="请选择性别">
+                        <el-option label="男" value="man"></el-option>
+                        <el-option label="女" value="woman"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="生日年月" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="手机号" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="工号" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="首主界面" :label-width="formLabelWidth">
+                    <el-select v-model="form.module" placeholder="请选择模块">
+                        <el-option label="规程信息维护" value="defend"></el-option>
+                        <el-option label="规程信息编辑" value="edit"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="登录密码" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 <script>
 export default {
     name: 'home',
-    data() {},
+    data() {
+        return {
+            dialogFormVisible: false,
+            form: {
+                name: '',
+                region: '',
+                date1: '',
+                date2: '',
+                delivery: false,
+                type: [],
+                resource: '',
+                desc: ''
+            },
+            formLabelWidth: '120px'
+        };
+    },
     methods: {
 
     }
@@ -43,6 +99,22 @@ div {
         color: #333;
         text-align: center;
         line-height: 60px;
+
+        img {
+            width: 100px;
+        }
+
+        div {
+            float: right;
+            width: 150px;
+            height: 100%;
+
+            i {
+                font-size: 40px;
+                cursor: pointer;
+                vertical-align: middle;
+            }
+        }
     }
 
     .el-aside {

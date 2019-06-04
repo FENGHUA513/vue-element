@@ -5,10 +5,11 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import App from './App'
 import router from './router'
+import request from './plugins/request'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI, { size: 'small', zIndex: 3000 });
-
+Vue.use(request)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

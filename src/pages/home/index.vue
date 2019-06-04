@@ -88,6 +88,16 @@ export default {
     },
     methods: {
 
+    },
+    created() {
+        this.$request({
+            url: 'eee/eee.do',
+            method: 'get'
+        }).then((res) => {
+            // 成功返回
+        }).catch((res) => {
+            // 错误返回
+        })
     }
 }
 </script>

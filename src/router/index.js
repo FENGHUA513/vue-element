@@ -2,10 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/pages/login'
 import Home from '@/pages/home'
-import Deal from '@/pages/deal'
-import Work from '@/pages/work'
-import Order from '@/pages/order'
-import Info from '@/pages/info'
+import User from '@/pages/userManagement'
+import Execution from '@/pages/executionManagement'
+import Info from '@/pages/infoManagement'
 
 Vue.use(Router)
 
@@ -20,21 +19,17 @@ export default new Router({
       path: '/',
       name: 'Home',
       component: Home,
-      redirect: '/deal',
+      redirect: '/user',
       children: [
         {
-          path: '/deal',
-          name: 'Deal',
-          component: Deal
+          path: '/user',
+          name: 'User',
+          component: User
         },
         {
-          path: '/work',
-          name: 'Work',
-          component: Work
-        },{
-          path: '/order',
-          name: 'Order',
-          component: Order
+          path: '/execution',
+          name: 'Execution',
+          component: Execution
         },
         {
           path: '/info',

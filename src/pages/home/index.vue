@@ -11,18 +11,18 @@
             <el-container style="height: 500px; border: 1px solid #eee;">
                 <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
                     <el-menu :default-openeds="['1', '3']">
-                        <el-submenu index="1">
-                            <template slot="title"><i class="el-icon-message"></i>导航一</template>
-                            <el-menu-item-group>
-                                <template slot="title">分组一</template>
-                                <el-menu-item index="1-1">
-                                    <router-link class="item" :to="{path: '/deal'}" exact replace>处理中心</router-link>
-                                </el-menu-item>
-                                <el-menu-item index="1-2">
-                                    <router-link class="item" :to="{path: '/order'}" exact replace>订单管理</router-link>
-                                </el-menu-item>
-                            </el-menu-item-group>
-                        </el-submenu>
+                        <el-menu-item index="1">
+                            <i class="el-icon-menu"></i>
+                            <router-link class="item" :to="{path: '/user'}" exact replace>用户管理</router-link>
+                        </el-menu-item>
+                        <el-menu-item index="2">
+                            <i class="el-icon-document"></i>
+                            <router-link class="item" :to="{path: '/info'}" exact replace>规程信息</router-link>
+                        </el-menu-item>
+                        <el-menu-item index="3">
+                            <i class="el-icon-setting"></i>
+                            <router-link class="item" :to="{path: '/execution'}" exact replace>规程执行</router-link>
+                        </el-menu-item>
                     </el-menu>
                 </el-aside>
                 <el-main>
@@ -80,7 +80,7 @@ export default {
                 label: '女'
             }],
             sexValue: 'man',
-            
+
             moduleOptions: [{
                 value: 'defend',
                 label: '规程信息维护'

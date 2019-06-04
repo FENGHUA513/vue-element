@@ -36,9 +36,9 @@
                     <el-input v-model="form.name" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="性别" :label-width="formLabelWidth">
-                    <el-select v-model="form.region" placeholder="请选择性别">
-                        <el-option label="男" value="man"></el-option>
-                        <el-option label="女" value="woman"></el-option>
+                    <el-select v-model="sexValue" placeholder="请选择性别">
+                        <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
+                        </el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="生日年月" :label-width="formLabelWidth">
@@ -51,9 +51,8 @@
                     <el-input v-model="form.name" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="首主界面" :label-width="formLabelWidth">
-                    <el-select v-model="form.module" placeholder="请选择模块">
-                        <el-option label="规程信息维护" value="defend"></el-option>
-                        <el-option label="规程信息编辑" value="edit"></el-option>
+                    <el-select v-model="moduleValue" placeholder="请选择模块">
+                        <el-option v-for="item in moduleOptions" :key="item.value" :value="item.value" :label="item.label">
                     </el-select>
                 </el-form-item>
                 <el-form-item label="登录密码" :label-width="formLabelWidth">
@@ -72,6 +71,24 @@ export default {
     name: 'home',
     data() {
         return {
+            sexOptions: [{
+                value: 'man',
+                label: '男'
+            }, {
+                value: 'woman',
+                label: '女'
+            }],
+            sexValue: 'man',
+            
+            moduleOptions: [{
+                value: 'defend',
+                label: '规程信息维护'
+            }, {
+                value: 'edit',
+                label: '规程信息编辑'
+            }],
+            moduleValue: 'defend',
+
             dialogFormVisible: false,
             form: {
                 name: '',

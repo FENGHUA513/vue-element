@@ -36,7 +36,7 @@
                     <el-input v-model="form.name" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="性别" :label-width="formLabelWidth">
-                    <el-select v-model="sexValue" placeholder="请选择性别">
+                    <el-select v-model="sexValue" placeholder="请选择性别" style="width:100%;">
                         <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
                         </el-option>
                     </el-select>
@@ -51,7 +51,7 @@
                     <el-input v-model="form.name" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="首主界面" :label-width="formLabelWidth">
-                    <el-select v-model="moduleValue" placeholder="请选择模块">
+                    <el-select v-model="moduleValue" placeholder="请选择模块" style="width:100%;">
                         <el-option v-for="item in moduleOptions" :key="item.value" :value="item.value" :label="item.label">
                         </el-option>
                     </el-select>

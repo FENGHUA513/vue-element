@@ -53,6 +53,7 @@
                 <el-form-item label="首主界面" :label-width="formLabelWidth">
                     <el-select v-model="moduleValue" placeholder="请选择模块">
                         <el-option v-for="item in moduleOptions" :key="item.value" :value="item.value" :label="item.label">
+                        </el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="登录密码" :label-width="formLabelWidth">

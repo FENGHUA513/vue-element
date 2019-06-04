@@ -91,7 +91,7 @@ export default {
     },
     created() {
         this.$request({
-            url: 'eee/eee.do',
+            url: '/api/list',
             method: 'get'
         }).then((res) => {
             // 成功返回

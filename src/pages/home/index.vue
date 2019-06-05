@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-container>
+        <el-container :style="contentStyleObj">
             <el-header>
                 <img src="./image/logo.svg" alt="">
                 <div>
@@ -72,6 +72,9 @@ export default {
     name: 'home',
     data() {
         return {
+            contentStyleObj: {
+                height: ''
+            },
             sexOptions: [{
                 value: 'man',
                 label: '男'
@@ -105,9 +108,14 @@ export default {
         };
     },
     methods: {
+        getHeight(){
+          this.contentStyleObj.height=window.innerHeight+'px';
+        }
 
     },
     created() {
+        this.getHeight()
+        console.log(this.contentStyleObj)
         this.$request({
             url: '/api/list',
             method: 'get'

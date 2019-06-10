@@ -58,7 +58,7 @@
           <el-row :gutter="20">
             <el-col :span="12" style="padding: 0;"><div class="grid-content bg-purple"></div></el-col>
             <el-col :span="6" style="padding: 0;"><div class="grid-content bg-purple" style="background-color: #D7D7D7; overflow-y: auto;">
-              <el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+              <el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick" style="background: none;"></el-tree>
             </div></el-col>
             <el-col :span="6" style="padding: 0;"><div class="grid-content bg-purple"></div></el-col>
           </el-row>

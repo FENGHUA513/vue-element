@@ -1,14 +1,13 @@
 <template>
   <div>
-      <p>用户管理模块</p>
+    <p>用户管理模块</p>
   </div>
 </template>
-
 <script>
 export default {
   // name: 'home',
   // data () {
-   
+
   // },
   // components: {
   // },
@@ -26,9 +25,9 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
-div{
+div {
   a {
-    font-size:50px;
+    font-size: 50px;
     color: red;
     cursor: pointer;
     text-decoration: none;

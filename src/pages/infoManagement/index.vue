@@ -57,7 +57,9 @@
         <div class="rules-edit">
           <el-row :gutter="20">
             <el-col :span="12" style="padding: 0;"><div class="grid-content bg-purple"></div></el-col>
-            <el-col :span="6" style="padding: 0;"><div class="grid-content bg-purple" style="background-color: #D7D7D7;"></div></el-col>
+            <el-col :span="6" style="padding: 0;"><div class="grid-content bg-purple" style="background-color: #D7D7D7; overflow-y: auto;">
+              <el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+            </div></el-col>
             <el-col :span="6" style="padding: 0;"><div class="grid-content bg-purple"></div></el-col>
           </el-row>
           <!-- <div class="word-item"></div>
@@ -75,6 +77,45 @@ export default {
     return {
       showContent: true,
       fileList: [],
+      treeData: [{
+        label: '一级 1',
+        children: [{
+          label: '二级 1-1',
+          children: [{
+            label: '三级 1-1-1'
+          }]
+        }]
+      }, {
+        label: '一级 2',
+        children: [{
+          label: '二级 2-1',
+          children: [{
+            label: '三级 2-1-1'
+          }]
+        }, {
+          label: '二级 2-2',
+          children: [{
+            label: '三级 2-2-1'
+          }]
+        }]
+      }, {
+        label: '一级 3',
+        children: [{
+          label: '二级 3-1',
+          children: [{
+            label: '三级 3-1-1'
+          }]
+        }, {
+          label: '二级 3-2',
+          children: [{
+            label: '三级 3-2-1'
+          }]
+        }]
+      }],
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
       tableData: [{
         date: '2016-05-02',
         name: '王小虎',
@@ -141,6 +182,9 @@ export default {
     },
     fileUpload() {
       this.showContent = false;
+    },
+    handleNodeClick(data) {
+      console.log(data);
     }
   }
 }

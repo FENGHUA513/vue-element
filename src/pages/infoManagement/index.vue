@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="!fileDisplay">
+    <div v-if="showContent">
       <div class="keyword">
         <div class="demo-input-suffix" style="margin-left:100px;">
           <span>规程名：</span>
@@ -42,7 +42,7 @@
         </el-pagination>
       </div>
     </div>
-    <div v-if="fileDisplay">
+    <div v-else>
       <div class="selectFile">
         <h4>选择规程文件</h4>
         <el-upload class="upload-demo" ref="upload" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" :auto-upload="false">
@@ -73,7 +73,7 @@ export default {
   name: 'home',
   data() {
     return {
-      fileDisplay: false,
+      showContent: true,
       fileList: [],
       tableData: [{
         date: '2016-05-02',
@@ -140,7 +140,7 @@ export default {
       console.log(row);
     },
     fileUpload() {
-      this.fileDisplay = true;
+      this.showContent = false;
     }
   }
 }

@@ -11,16 +11,16 @@
       <el-container style="height: 500px; border: 1px solid #eee;">
         <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
           <el-menu default-active="1">
-            <el-menu-item index="1">
-              <i class="el-icon-s-custom"></i>
+            <el-menu-item index="1" style="padding: 0;">
+              <!-- <i class="el-icon-s-custom"></i> -->
               <router-link class="item" :to="{path: '/user'}" exact replace>用户管理</router-link>
             </el-menu-item>
-            <el-menu-item index="2">
-              <i class="el-icon-document"></i>
+            <el-menu-item index="2" style="padding: 0;">
+              <!-- <i class="el-icon-document"></i> -->
               <router-link class="item" :to="{path: '/info'}" exact replace>规程信息</router-link>
             </el-menu-item>
-            <el-menu-item index="3">
-              <i class="el-icon-s-promotion"></i>
+            <el-menu-item index="3" style="padding: 0;">
+              <!-- <i class="el-icon-s-promotion"></i> -->
               <router-link class="item" :to="{path: '/execution'}" exact replace>规程执行</router-link>
             </el-menu-item>
           </el-menu>
@@ -135,16 +135,13 @@ div {
     color: #333;
     text-align: center;
     line-height: 60px;
-
     img {
       width: 100px;
     }
-
     div {
       float: right;
       width: 150px;
       height: 100%;
-
       i {
         font-size: 40px;
         cursor: pointer;
@@ -152,14 +149,14 @@ div {
       }
     }
   }
-
   .el-aside {
-    // background-color: #D3DCE6;
     color: #333;
-    // text-align: center;
-    // line-height: 400px;
+    .item{
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
   }
-
   .el-main {
     background-color: #E9EEF3;
     color: #333;

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div ref="container">
+    <div v-if="!fileDisplay">
       <div class="keyword">
         <div class="demo-input-suffix" style="margin-left:100px;">
           <span>规程名：</span>
@@ -42,7 +42,7 @@
         </el-pagination>
       </div>
     </div>
-    <div ref="fileUpload" style="display: none;">
+    <div v-if="fileDisplay">
       <div class="selectFile">
         <h4>选择规程文件</h4>
         <el-upload class="upload-demo" ref="upload" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" :auto-upload="false">
@@ -52,7 +52,19 @@
         <el-button style="position: absolute;right:50px;bottom:30px;" size="small" type="success" @click="submitUpload">上传文件</el-button>
       </div>
       <div class="renderIcon"><i class="el-icon-house"></i></div>
-      <div class="renderData"></div>
+      <div class="renderData">
+        <h4>规程编辑</h4>
+        <div class="rules-edit">
+          <el-row :gutter="20">
+            <el-col :span="12" style="padding: 0;"><div class="grid-content bg-purple"></div></el-col>
+            <el-col :span="6" style="padding: 0;"><div class="grid-content bg-purple" style="background-color: #D7D7D7;"></div></el-col>
+            <el-col :span="6" style="padding: 0;"><div class="grid-content bg-purple"></div></el-col>
+          </el-row>
+          <!-- <div class="word-item"></div>
+          <div class="tree-item"></div>
+          <div class="condition-item"></div> -->
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -61,6 +73,7 @@ export default {
   name: 'home',
   data() {
     return {
+      fileDisplay: false,
       fileList: [],
       tableData: [{
         date: '2016-05-02',
@@ -127,8 +140,7 @@ export default {
       console.log(row);
     },
     fileUpload() {
-      this.$refs.container.style.display = 'none';
-      this.$refs.fileUpload.style.display = 'block';
+      this.fileDisplay = true;
     }
   }
 }
@@ -143,30 +155,25 @@ div {
   .keyword {
     width: 100%;
     overflow: hidden;
-
     .demo-input-suffix {
       float: left;
       text-align: left;
       height: 32px;
       overflow: hidden;
-
       span {
         display: inline-block;
         width: 85px;
       }
-
       .ele-input {
         display: inline-block;
         width: 200px;
       }
     }
   }
-
   .content {
     text-align: left;
     margin-top: 30px;
   }
-
   .selectFile {
     position: relative;
     text-align: left;
@@ -179,9 +186,8 @@ div {
       margin-left: 10px;
     }
   }
-
   .renderIcon {
-    font-size: 100px;
+    font-size: 50px;
     color: #797979;
     margin: 10px 0;
     transform: rotate(180deg);
@@ -190,12 +196,38 @@ div {
     -webkit-transform: rotate(180deg);
     -o-transform: rotate(180deg);
   }
-
   .renderData {
     border: 1px solid #797979;
-    height: 300px;
+    height: 350px;
+    text-align: left;
+    h4 {
+      font-weight: 700;
+      line-height: 30px;
+      margin-left: 10px;
+    }
+    .rules-edit{
+      width: 100%;
+      padding: 0 20px;
+      box-sizing: border-box;
+      .el-row {
+        // margin-bottom: 20px;
+        &:last-child {
+          margin-bottom: 0;
+        }
+        .el-col {
+          height: 320px;
+        }
+        .bg-purple {
+          background: #d3dce6;
+        }
+        .grid-content {
+          border-radius: 4px;
+          min-height: 36px;
+          height: 100%;
+        }
+      }
+    }
   }
-
   a {
     font-size: 50px;
     color: red;

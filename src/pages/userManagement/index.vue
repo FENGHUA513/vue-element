@@ -33,13 +33,11 @@
           </div>
         </div>
         <div class="content">
-          <el-button type="primary" @click="addPerson">新增人员</el-button>
+          <el-button type="primary" @click="dialogAddPerson = true">新增人员</el-button>
           <el-table :data="tableData" border style="width: 100%;margin:10px 0;">
-            <!-- <el-table-column align="center" prop="date" label="用户名">
-            </el-table-column> -->
-            <el-table-column align="center" prop="date" label="用户名">
+            <el-table-column align="center" label="用户名">
               <template slot-scope="scope">
-                <el-button @click="dialogUserInfo = true" type="text" size="small"></el-button>
+                <el-button @click="dialogUserInfo = true" type="text" size="small">{{ scope.row.date }}</el-button>
               </template>
             </el-table-column>
             <el-table-column align="center" prop="name" label="具备的权限角色">
@@ -66,7 +64,50 @@
           </el-pagination>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="日志信息">日志信息</el-tab-pane>
+      <el-tab-pane label="日志信息">
+        <div class="keyradio">
+          <el-radio-group v-model="radio">
+            <el-radio :label="3">今天</el-radio>
+            <el-radio :label="6">近
+              <el-select v-model="searchValue" style="width: 90px;">
+                <el-option
+                  v-for="item in searchOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-radio>
+            <el-radio :label="9">自定义时间段
+              <el-date-picker v-model="value1" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+              </el-date-picker>
+            </el-radio>
+          </el-radio-group>
+        </div>
+        <div class="search">
+          <div class="demo-input-suffix" style="margin-left:110px;">
+            <el-button type="primary">查询</el-button>
+          </div>
+        </div>
+        <div class="content">
+          <el-button type="primary" @click="dialogAddPerson = true">新增人员</el-button>
+          <el-table :data="tableData" border style="width: 100%;margin:10px 0;">
+            <el-table-column align="center" prop="name" label="操作名">
+            </el-table-column>
+            <el-table-column align="center" label="用户名">
+              <template slot-scope="scope">
+                <el-button @click="dialogUserInfo = true" type="text" size="small">{{ scope.row.date }}</el-button>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" prop="city" label="工号" width="120">
+            </el-table-column>
+            <el-table-column align="center" prop="address" label="操作时间">
+            </el-table-column>
+          </el-table>
+          <el-pagination align="right" background layout="prev, pager, next" :total="1000">
+          </el-pagination>
+        </div>
+      </el-tab-pane>
     </el-tabs>
     <el-dialog title="日志信息" :visible.sync="dialogViewLog" width="35%">
       <div slot="footer" class="dialog-footer">
@@ -76,6 +117,32 @@
     <el-dialog title="用户信息" :visible.sync="dialogUserInfo" width="35%">
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dialogUserInfo = false">关 闭</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="新增人员信息" :visible.sync="dialogAddPerson" width="35%">
+      <el-form>
+        <el-form-item label="姓名" :label-width="formLabelWidth">
+          <el-input autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="性别" :label-width="formLabelWidth">
+          <el-select v-model="sexValue" placeholder="请选择性别" style="width:100%;">
+            <el-option v-for="item in sexOptions" :key="item.value" :value="item.value" :label="item.label">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="生日年月" :label-width="formLabelWidth">
+          <el-input autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号" :label-width="formLabelWidth">
+          <el-input autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="工号" :label-width="formLabelWidth">
+          <el-input autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogAddPerson = false">取 消</el-button>
+        <el-button type="primary" @click="dialogAddPerson = false">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -89,8 +156,30 @@ export default {
       input2: '',
       input3: '',
       radio: 3,
+      value1: '',
       dialogViewLog: false,
       dialogUserInfo: false,
+      dialogAddPerson: false,
+      sexOptions: [{
+        value: 'man',
+        label: '男'
+      }, {
+        value: 'woman',
+        label: '女'
+      }],
+      sexValue: 'man',
+      formLabelWidth: '120px',
+      searchOptions: [{
+        value: '选项1',
+        label: '一天'
+      }, {
+        value: '选项2',
+        label: '一周'
+      }, {
+        value: '选项3',
+        label: '一个月'
+      }],
+      searchValue: '选项1',
       tableData: [{
         date: '2016-05-02',
         name: '王小虎',
@@ -135,13 +224,7 @@ export default {
   methods: {
     handleClick(row) {
       console.log(row);
-    },
-    addPerson() {
-      console.log("addperson");
     }
-    // viewLog() {
-    //   console.log("查看日志");
-    // }
   }
 }
 </script>

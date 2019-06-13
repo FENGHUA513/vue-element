@@ -12,16 +12,13 @@
         <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
           <el-menu default-active="1">
             <el-menu-item index="1" style="padding: 0;">
-              <!-- <i class="el-icon-s-custom"></i> -->
-              <router-link class="item" :to="{path: '/user'}" exact replace>用户管理</router-link>
+              <router-link class="item" :to="{path: '/user'}" exact replace><i class="el-icon-s-custom"></i>用户管理</router-link>
             </el-menu-item>
             <el-menu-item index="2" style="padding: 0;">
-              <!-- <i class="el-icon-document"></i> -->
-              <router-link class="item" :to="{path: '/info'}" exact replace>规程信息</router-link>
+              <router-link class="item" :to="{path: '/info'}" exact replace><i class="el-icon-document"></i>规程信息</router-link>
             </el-menu-item>
             <el-menu-item index="3" style="padding: 0;">
-              <!-- <i class="el-icon-s-promotion"></i> -->
-              <router-link class="item" :to="{path: '/execution'}" exact replace>规程执行</router-link>
+              <router-link class="item" :to="{path: '/execution'}" exact replace><i class="el-icon-s-promotion"></i>规程执行</router-link>
             </el-menu-item>
           </el-menu>
         </el-aside>
@@ -155,6 +152,10 @@ div {
       display: block;
       width: 100%;
       height: 100%;
+      &.active {
+        background-color: #B3C0D1;
+        color: #409EFF;
+      }
     }
   }
   .el-main {

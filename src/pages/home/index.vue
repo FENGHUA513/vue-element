@@ -4,11 +4,11 @@
       <el-header>
         <img src="./image/logo.svg" alt="">
         <div>
-          <span id="user">冀晶晶</span>
+          <span id="user">唐元明</span>
           <el-button type="text" @click="dialogFormVisible = true"><i class="el-icon-s-tools"></i></el-button>
         </div>
       </el-header>
-      <el-container style="height: 500px; border: 1px solid #eee;">
+      <el-container style="height: 500px;">
         <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
           <el-menu default-active="1">
             <el-menu-item index="1" style="padding: 0;">
@@ -128,8 +128,8 @@ export default {
 <style scoped lang="less">
 div {
   .el-header {
-    background-color: #B3C0D1;
-    color: #333;
+    background-color: #545C64;
+    color: #fff;
     text-align: center;
     line-height: 60px;
     img {
@@ -153,8 +153,8 @@ div {
       width: 100%;
       height: 100%;
       &.active {
-        background-color: #B3C0D1;
-        color: #409EFF;
+        background-color: #409EFF;
+        color: #fff;
       }
     }
   }

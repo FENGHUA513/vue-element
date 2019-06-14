@@ -56,15 +56,46 @@
         <h4>规程编辑</h4>
         <div class="rules-edit">
           <el-row :gutter="20">
-            <el-col :span="12" style="padding: 0;"><div class="grid-content bg-purple"></div></el-col>
-            <el-col :span="6" style="padding: 0;"><div class="grid-content bg-purple" style="background-color: #D7D7D7; overflow-y: auto;">
+            <el-col :span="14" style="padding: 0;">
+              <div class="grid-content">
+                <el-input v-model="input" style="width: 80%;display: block;margin:0 auto;"></el-input>
+                <h1>1 参考文件</h1>
+                <el-input type="textarea" :rows="5" v-model="textarea1" resize="none">
+                </el-input>
+                <h1>2 系统功能</h1>
+                <el-input type="textarea" :rows="15" v-model="textarea2" resize="none">
+                </el-input>
+                <h1>3 系统设备</h1>
+                <el-input type="textarea" :rows="5" v-model="textarea3" resize="none">
+                </el-input>
+                <h1>4 附件（正文）</h1>
+                <el-input type="textarea" :rows="15" v-model="input" resize="none">
+                </el-input>
+              </div>
+            </el-col>
+            <el-col :span="4" style="padding: 0;"><div class="grid-content bg-purple" style="background-color: #D7D7D7; overflow-y: auto;">
               <el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick" style="background: none;"></el-tree>
             </div></el-col>
-            <el-col :span="6" style="padding: 0;"><div class="grid-content bg-purple"></div></el-col>
+            <el-col :span="6" style="padding: 0;">
+              <div class="grid-content">
+                <div style="text-align: center;border-bottom: 2px dashed #000;margin: 10px;">
+                  <el-radio v-model="radio" label="1">标识状态核对</el-radio>
+                  <el-radio v-model="radio" label="2">人工核对</el-radio>
+                </div>
+                <div style="margin-top: 50px;">
+                  <el-input v-model="input5" style="width:110px;"></el-input>
+                  <el-select v-model="symbolValue" style="width:60px;">
+                    <el-option v-for="item in symbolOptions" :key="item.value" :label="item.label" :value="item.value">
+                    </el-option>
+                  </el-select>
+                  <el-input v-model="input6" style="width:60px;"></el-input>
+                </div>
+                <div style="margin-top:50px;text-align: center;">
+                  <el-button type="primary">保存</el-button>
+                </div>
+              </div>
+            </el-col>
           </el-row>
-          <!-- <div class="word-item"></div>
-          <div class="tree-item"></div>
-          <div class="condition-item"></div> -->
         </div>
       </div>
     </div>
@@ -149,6 +180,13 @@ export default {
       input2: '',
       input3: '',
       input4: '',
+      input5: '1JNB20-AA01',
+      input6: '关闭',
+      radio: '1',
+      input: '1#堆屏蔽冷却水系统运行规程',
+      textarea1: 'HS0H0002900000900PR001  初步安全分析报告第九章',
+      textarea2: '1号堆屏蔽冷却水系统用于完成以下基本功能',
+      textarea3: '无',
       typeOptions: [{
         value: 'run',
         label: '运行规程'
@@ -156,7 +194,18 @@ export default {
         value: 'fault',
         label: '故障规程'
       }],
-      typeValue: ''
+      typeValue: '',
+      symbolOptions: [{
+        value: 'equal',
+        label: '='
+      }, {
+        value: 'greater',
+        label: '>'
+      }, {
+        value: 'less',
+        label: '<'
+      }],
+      symbolValue: 'equal'
     }
   },
   // components: {},
@@ -209,7 +258,6 @@ div {
         width: 85px;
       }
       .ele-input {
-        display: inline-block;
         width: 200px;
       }
     }
@@ -242,7 +290,7 @@ div {
   }
   .renderData {
     border: 1px solid #797979;
-    height: 350px;
+    // height: 750px;
     text-align: left;
     h4 {
       font-weight: 700;
@@ -253,13 +301,17 @@ div {
       width: 100%;
       padding: 0 20px;
       box-sizing: border-box;
+      h1 {
+        font-size:24px;
+        line-height: 40px;
+      }
       .el-row {
         // margin-bottom: 20px;
         &:last-child {
           margin-bottom: 0;
         }
         .el-col {
-          height: 320px;
+          // height: 720px;
         }
         .bg-purple {
           background: #d3dce6;

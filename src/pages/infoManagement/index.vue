@@ -56,7 +56,7 @@
         <h4>规程编辑</h4>
         <div class="rules-edit">
           <el-row :gutter="20">
-            <el-col :span="14" style="padding: 0;">
+            <el-col :span="14" style="padding: 0;height: 1000px;">
               <div class="grid-content">
                 <el-input v-model="input" style="width: 80%;display: block;margin:0 auto;"></el-input>
                 <h1>1 参考文件</h1>
@@ -73,22 +73,43 @@
                 </el-input>
               </div>
             </el-col>
-            <el-col :span="4" style="padding: 0;"><div class="grid-content bg-purple" style="background-color: #D7D7D7; overflow-y: auto;">
-              <el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick" style="background: none;"></el-tree>
-            </div></el-col>
-            <el-col :span="6" style="padding: 0;">
+            <el-col :span="5" style="padding: 0;height: 1000px;">
+              <div class="grid-content bg-purple" style="background-color: #D7D7D7; overflow-y: auto;">
+                <el-tree :data="treeData" node-key="id" :default-expanded-keys="[2, 5, 6, 3, 7, 8]" :props="defaultProps" @node-click="handleNodeClick" style="background: none;">
+                </el-tree>
+              </div>
+            </el-col>
+            <el-col :span="5" style="padding: 0;">
               <div class="grid-content">
-                <div style="text-align: center;border-bottom: 2px dashed #000;margin: 10px;">
+                <h4>核对方式</h4>
+                <div style="margin: 10px;">
                   <el-radio v-model="radio" label="1">标识状态核对</el-radio>
+                </div>
+                <div style="margin: 10px;">
                   <el-radio v-model="radio" label="2">人工核对</el-radio>
                 </div>
-                <div style="margin-top: 50px;">
-                  <el-input v-model="input5" style="width:110px;"></el-input>
+                <h4 style="margin-top: 30px;">逻辑条件</h4>
+                <div style="margin: 10px;">
+                  <el-row :gutter="20">
+                    <el-col :span="12">
+                      <el-input v-model="input5"></el-input>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-select v-model="symbolValue" style="width:60px;">
+                        <el-option v-for="item in symbolOptions" :key="item.value" :label="item.label" :value="item.value">
+                        </el-option>
+                      </el-select>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-input v-model="input6" style="width:60px;"></el-input>
+                    </el-col>
+                  </el-row>
+                  <!-- <el-input v-model="input5" style="width:110px;"></el-input>
                   <el-select v-model="symbolValue" style="width:60px;">
                     <el-option v-for="item in symbolOptions" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                   </el-select>
-                  <el-input v-model="input6" style="width:60px;"></el-input>
+                  <el-input v-model="input6" style="width:60px;"></el-input> -->
                 </div>
                 <div style="margin-top:50px;text-align: center;">
                   <el-button type="primary">保存</el-button>
@@ -109,37 +130,50 @@ export default {
       showContent: true,
       fileList: [],
       treeData: [{
-        label: '一级 1',
+        id: 1,
+        label: '附件1.1号堆屏蔽冷却水系统充水排气',
         children: [{
-          label: '二级 1-1',
+          id: 4,
+          label: '正文大项',
           children: [{
-            label: '三级 1-1-1'
+            id: 9,
+            label: '正文核对项'
           }]
         }]
       }, {
-        label: '一级 2',
+        id: 2,
+        label: '附件2.1号堆屏蔽冷却水系统充水排气',
         children: [{
-          label: '二级 2-1',
+          id: 5,
+          label: '正文大项',
           children: [{
-            label: '三级 2-1-1'
+            id: 10,
+            label: '正文核对项'
           }]
         }, {
-          label: '二级 2-2',
+          id: 6,
+          label: '正文大项',
           children: [{
-            label: '三级 2-2-1'
+            id: 11,
+            label: '正文核对项'
           }]
         }]
       }, {
-        label: '一级 3',
+        id: 3,
+        label: '附件3.1号堆屏蔽冷却水系统充水排气',
         children: [{
-          label: '二级 3-1',
+          id: 7,
+          label: '正文大项',
           children: [{
-            label: '三级 3-1-1'
+            id: 12,
+            label: '正文核对项'
           }]
         }, {
-          label: '二级 3-2',
+          id: 8,
+          label: '正文大项',
           children: [{
-            label: '三级 3-2-1'
+            id: 13,
+            label: '正文核对项'
           }]
         }]
       }],
@@ -311,14 +345,12 @@ div {
           margin-bottom: 0;
         }
         .el-col {
-          // height: 720px;
+          // height: 1000px;
         }
         .bg-purple {
           background: #d3dce6;
         }
         .grid-content {
-          border-radius: 4px;
-          min-height: 36px;
           height: 100%;
         }
       }

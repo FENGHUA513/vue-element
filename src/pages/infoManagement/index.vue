@@ -19,9 +19,11 @@
         </div>
       </div>
       <div class="content">
-        <el-button type="primary" @click="fileUpload = true">规程文件上传</el-button>
+        <el-button type="primary" @click="fileUpload = true">上传规程word文档</el-button>
+        <el-button type="primary" @click="fileUpload = true">导入规程数据文件</el-button>
+        <el-button type="primary" @click="fileUpload = true">多个导出</el-button>
         <el-table :data="tableData" border style="width: 100%;margin:10px 0;">
-          <el-table-column prop="id" label="id" v-if="hideRow">
+          <el-table-column align="center" prop="id" label="id" width="100">
           </el-table-column>
           <el-table-column prop="dirName" label="文档详细信息所在目录名称" v-if="hideRow">
           </el-table-column>
@@ -46,7 +48,7 @@
           <el-table-column align="center" label="导出">
             <template slot-scope="scope">
               <el-button @click="handleClick(scope.row)" type="text" size="small">导出成word文档</el-button>
-              <el-button type="text" size="small">导出成数据文件</el-button>
+              <el-button @click="exportDialog(scope.row)" type="text" size="small">导出成数据文件</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -132,6 +134,31 @@
         <el-button size="small" type="success" @click="submitUpload">上传文件</el-button>
       </div>
     </el-dialog>
+    <el-dialog title="导出数据文件" :visible.sync="showDialogZip" width="35%" center>
+      <el-form :model="dataZip">
+        <el-form-item label="规程名" :label-width="formLabelWidth">
+          <el-input v-model="dataZip.name" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="版次" :label-width="formLabelWidth">
+          <el-input v-model="dataZip.edition" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="文档代码" :label-width="formLabelWidth">
+          <el-input v-model="dataZip.fileCode" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="规程类型" :label-width="formLabelWidth">
+          <el-input v-model="dataZip.regulationType" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="上传时间" :label-width="formLabelWidth">
+          <el-input v-model="dataZip.uploadTime" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="最新修改时间" :label-width="formLabelWidth">
+          <el-input v-model="dataZip.updateTime" :disabled="true"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handleExportZip">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -144,6 +171,9 @@ export default {
       showContent: true,
       fileUpload: false,
       fileList: [],
+      showDialogZip: false,
+      dataZip: {},
+      formLabelWidth: '120px',
       treeData: [{
         id: 1,
         label: '附件1.1号堆屏蔽冷却水系统充水排气',
@@ -250,6 +280,24 @@ export default {
     },
     handleClick(row) {
       console.log(row);
+    },
+    exportDialog(row) {
+      this.showDialogZip = true;
+      // console.log(row);
+      this.dataZip = row;
+    },
+    handleExportZip() {
+      this.$request({
+        url: '/regulations/downloadzip',
+        method: 'post',
+        data: {
+          ids: this.dataZip.id
+        }
+      }).then((res) => {
+        console.log('res')
+      }).catch((error) => {
+        console.log(error)
+      })
     },
     handleNodeClick(data) {
       console.log(data);

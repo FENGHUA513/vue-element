@@ -3,6 +3,7 @@ import qs from 'qs'
 
 const config = {
   timeout: 6000,
+  responseType: 'json',
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded'
   }
@@ -45,13 +46,14 @@ function request (options = {}) {
     method,
     data,
     timeout,
-    headers
+    headers,
+    responseType
   } = options
 
   method = method || 'post'
   data = data || {}
   timeout = timeout || config.timeout
-  headers = Object.assign({}, headers, config.headers)
+  headers = Object.assign({}, config.headers, headers)
 
   var time = +new Date() + ''
   headers.time = time
@@ -65,6 +67,7 @@ function request (options = {}) {
         url: fixURL(url),
         params: data,
         timeout,
+        responseType,
         headers
       })
       .then((res) => {
@@ -86,6 +89,7 @@ function request (options = {}) {
         url: fixURL(url),
         data: qs.stringify(data),
         timeout,
+        responseType,
         headers
       })
       .then((res) => {

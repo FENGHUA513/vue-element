@@ -54,7 +54,7 @@ function request (options = {}) {
   data = data || {}
   timeout = timeout || config.timeout
   headers = Object.assign({}, config.headers, headers)
-
+  responseType = responseType || config.responseType
   var time = +new Date() + ''
   headers.time = time
 

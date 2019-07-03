@@ -17,12 +17,11 @@ function fixURL (url) {
 }
 
 
-function checkResponse (response, notice) {
-  console.log('response', response)
+function checkResponse (response) {
+  // console.log('response', response)
   return new Promise((resolve, reject) => {
-    let code = Number(response.code)
-    let status = response.status
-    if (code === 0) {
+    let state = Number(response.state)
+    if (state === 0) {
       resolve(response)
     } else {
       reject(response)
@@ -69,7 +68,7 @@ function request (options = {}) {
         headers
       })
       .then((res) => {
-        checkResponse(res.data, notice).then((data) => {
+        checkResponse(res.data).then((data) => {
           resolve(data)
         })
         .catch((data) => {
@@ -90,7 +89,7 @@ function request (options = {}) {
         headers
       })
       .then((res) => {
-        checkResponse(res.data, notice).then((data) => {
+        checkResponse(res.data).then((data) => {
           resolve(data)
         })
         .catch((data) => {

@@ -19,39 +19,42 @@
         </div>
       </div>
       <div class="content">
-        <el-button type="primary" @click="fileUpload">规程文件上传</el-button>
+        <el-button type="primary" @click="fileUpload = true">规程文件上传</el-button>
         <el-table :data="tableData" border style="width: 100%;margin:10px 0;">
-          <el-table-column align="center" prop="date" label="规程名">
+          <el-table-column prop="id" label="id" v-if="hideRow">
           </el-table-column>
-          <el-table-column align="center" prop="name" label="规程类型" width="100">
+          <el-table-column prop="dirName" label="文档详细信息所在目录名称" v-if="hideRow">
           </el-table-column>
-          <el-table-column align="center" prop="province" label="上传时间">
+          <el-table-column align="center" prop="name" label="规程名">
           </el-table-column>
-          <el-table-column align="center" prop="city" label="最新更新时间">
+          <el-table-column align="center" prop="edition" label="版次" width="100">
           </el-table-column>
-          <el-table-column align="center" prop="address" label="上传人/修改人">
+          <el-table-column align="center" prop="fileCode" label="文档代码" width="100">
           </el-table-column>
-          <el-table-column align="center" label="操作" width="100">
+          <el-table-column align="center" prop="regulationType" label="规程类型" width="100">
+          </el-table-column>
+          <el-table-column align="center" prop="uploadTime" label="上传时间">
+          </el-table-column>
+          <el-table-column align="center" prop="updateTime" label="最新更新时间">
+          </el-table-column>
+          <el-table-column align="center" label="操作" width="150">
             <template slot-scope="scope">
               <el-button @click="handleClick(scope.row)" type="text" size="small">修改</el-button>
               <el-button type="text" size="small">删除</el-button>
             </template>
           </el-table-column>
+          <el-table-column align="center" label="导出">
+            <template slot-scope="scope">
+              <el-button @click="handleClick(scope.row)" type="text" size="small">导出成word文档</el-button>
+              <el-button type="text" size="small">导出成数据文件</el-button>
+            </template>
+          </el-table-column>
         </el-table>
-        <el-pagination align="right" background layout="prev, pager, next" :total="1000">
+        <el-pagination align="right" background layout="prev, pager, next" :current-page="pageData.pageNo" :total="pageData.count" @current-change="handleCurrentChange">
         </el-pagination>
       </div>
     </div>
     <div v-else>
-      <div class="selectFile">
-        <h4>选择规程文件</h4>
-        <el-upload class="upload-demo" ref="upload" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" :auto-upload="false">
-          <el-button style="margin-left:50px;" slot="trigger" size="small" type="primary">选择文件</el-button>
-          <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-        </el-upload>
-        <el-button style="position: absolute;right:50px;bottom:30px;" size="small" type="success" @click="submitUpload">上传文件</el-button>
-      </div>
-      <div class="renderIcon"><i class="el-icon-house"></i></div>
       <div class="renderData">
         <h4>规程编辑</h4>
         <div class="rules-edit">
@@ -120,6 +123,15 @@
         </div>
       </div>
     </div>
+    <!-- 规程文件上传 -->
+    <el-dialog title="选择规程文档" :visible.sync="fileUpload" width="35%">
+      <el-upload class="upload-demo" ref="upload" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" :auto-upload="false">
+        <el-button style="margin-left:50px;" slot="trigger" size="small" type="primary">选择文件</el-button>
+      </el-upload>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" type="success" @click="submitUpload">上传文件</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -127,7 +139,10 @@ export default {
   name: 'home',
   data() {
     return {
+      pageData: {},
+      hideRow: false,
       showContent: true,
+      fileUpload: false,
       fileList: [],
       treeData: [{
         id: 1,
@@ -181,35 +196,7 @@ export default {
         children: 'children',
         label: 'label'
       },
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1517 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1519 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1516 弄',
-        zip: 200333
-      }],
+      tableData: [],
       input1: '',
       input2: '',
       input3: '',
@@ -247,12 +234,13 @@ export default {
   //     console.log('beforeCreate')
   // },
   // mounted() {},
-  // created() {
-  //     console.log('created')
-  // },
+  created() {
+    this.render()
+  },
   methods: {
     submitUpload() {
-      this.$refs.upload.submit();
+      // this.$refs.upload.submit();
+      this.showContent = false;
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);
@@ -263,11 +251,34 @@ export default {
     handleClick(row) {
       console.log(row);
     },
-    fileUpload() {
-      this.showContent = false;
-    },
     handleNodeClick(data) {
       console.log(data);
+    },
+    handleCurrentChange(curPage) {
+      // console.log(curPage);
+      this.pageData.pageNo = curPage
+      this.render()
+    },
+    render(){
+      this.$request({
+        url: '/regulations/regulationsPage',
+        method: 'get',
+        data: {
+          pageNo: this.pageData.pageNo || 1,
+          pageCount: 10
+        }
+      }).then((res) => {  //pageData
+        let result = res.data.regulations.list;
+        this.pageData.count = res.data.regulations.count;   //总记录数
+        this.pageData.pageNo = res.data.regulations.pageNo;   //当前页码
+        // this.pageData.pageSize = res.data.regulations.pageSize; //总页数
+        // this.pageData.pageCount = res.data.regulations.pageCount;//每页的数据条数
+        if (result instanceof Array && result.length > 0) {
+          this.tableData = result;
+        }
+      }).catch((error) => {
+        console.log(error)
+      })
     }
   }
 }
@@ -299,28 +310,6 @@ div {
   .content {
     text-align: left;
     margin-top: 30px;
-  }
-  .selectFile {
-    position: relative;
-    text-align: left;
-    border: 1px solid #797979;
-    height: 200px;
-    overflow-y: scroll;
-    h4 {
-      font-weight: 700;
-      line-height: 30px;
-      margin-left: 10px;
-    }
-  }
-  .renderIcon {
-    font-size: 50px;
-    color: #797979;
-    margin: 10px 0;
-    transform: rotate(180deg);
-    -ms-transform: rotate(180deg);
-    -moz-transform: rotate(180deg);
-    -webkit-transform: rotate(180deg);
-    -o-transform: rotate(180deg);
   }
   .renderData {
     border: 1px solid #797979;

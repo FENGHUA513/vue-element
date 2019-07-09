@@ -4,25 +4,35 @@
       <div class="keyword">
         <div class="demo-input-suffix" style="margin-left:100px;">
           <span>规程名：</span>
-          <el-input class="ele-input" placeholder="请输入内容" v-model="input1" clearable>
+          <el-input class="ele-input" placeholder="请输入内容" v-model="regulationName" clearable>
           </el-input>
         </div>
         <div class="demo-input-suffix" style="margin-left:60px;">
           <span>规程类型：</span>
-          <el-select v-model="typeValue" clearable placeholder="请选择">
+          <el-select v-model="regulationTypes" clearable placeholder="请选择">
             <el-option v-for="item in typeOptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
         </div>
         <div class="demo-input-suffix" style="margin-left:110px;">
-          <el-button type="primary">查询</el-button>
+          <el-button type="primary" @click="searchRegulations">查询</el-button>
         </div>
       </div>
       <div class="content">
-        <el-button type="primary" @click="fileUpload = true">上传规程word文档</el-button>
-        <el-button type="primary" @click="fileUpload = true">导入规程数据文件</el-button>
-        <el-button type="primary" @click="fileUpload = true">多个导出</el-button>
-        <el-table :data="tableData" border style="width: 100%;margin:10px 0;">
+        <el-button type="primary" @click="fileUploadWord = true">上传规程word文档</el-button>
+        <el-button type="primary" @click="fileUploadZip = true">导入规程数据文件</el-button>
+        <el-button type="primary" @click="multipleExports = true">多个导出</el-button>
+        <div v-if="multipleExports" style="float:right;">
+          <el-radio-group v-model="documentForm">
+            <el-radio label="word">word文档形式</el-radio>
+            <el-radio label="zip">数据文件形式</el-radio>
+          </el-radio-group>
+          <el-button type="primary" @click="selectedDataExport">当前页选中记录导出</el-button>
+          <el-button type="primary" @click="allSelectedDataExport">所有查询结果记录导出</el-button>
+        </div>
+        <el-table ref="multipleTable" :data="tableData" border style="width: 100%;margin:10px 0;" @selection-change="handleSelectionChange">
+          <el-table-column type="selection" align="center" width="55">
+          </el-table-column>
           <el-table-column align="center" prop="id" label="id" width="100">
           </el-table-column>
           <el-table-column prop="dirName" label="文档详细信息所在目录名称" v-if="hideRow">
@@ -42,7 +52,7 @@
           <el-table-column align="center" label="操作" width="150">
             <template slot-scope="scope">
               <el-button @click="handleClick(scope.row)" type="text" size="small">修改</el-button>
-              <el-button type="text" size="small">删除</el-button>
+              <el-button type="text" size="small" @click="handleDelete(scope.row)">删除</el-button>
             </template>
           </el-table-column>
           <el-table-column align="center" label="导出">
@@ -125,13 +135,22 @@
         </div>
       </div>
     </div>
-    <!-- 规程文件上传 -->
-    <el-dialog title="选择规程文档" :visible.sync="fileUpload" width="35%">
-      <el-upload class="upload-demo" ref="upload" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" :auto-upload="false">
-        <el-button style="margin-left:50px;" slot="trigger" size="small" type="primary">选择文件</el-button>
+    <!-- 规程数据文件上传 -->
+    <el-dialog title="选择要导入的规程数据文件包" :visible.sync="fileUploadZip" width="35%">
+      <el-upload class="upload-demo" ref="uploadZip" :limit="1" action="/regulations/importzip" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" :auto-upload="false" :on-success="handleZipFileSuccess" :on-error="handleZipFileError"  :before-upload="beforeZipFileUpload">
+        <el-button slot="trigger" size="small" type="primary">选择文件</el-button>
       </el-upload>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" type="success" @click="submitUpload">上传文件</el-button>
+        <el-button size="small" type="success" @click="submitUploadZip">上传文件</el-button>
+      </div>
+    </el-dialog>
+    <!-- 规程word文档上传 -->
+    <el-dialog title="选择规程word文档" :visible.sync="fileUploadWord" width="35%">
+      <el-upload class="upload-demo" ref="uploadWord" :limit="1" action="/regulations/importWord" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" :auto-upload="false" :on-success="handleZipFileSuccess" :on-error="handleZipFileError">
+        <el-button slot="trigger" size="small" type="primary">选择文件</el-button>
+      </el-upload>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" type="success" @click="submitUploadWord">上传文件</el-button>
       </div>
     </el-dialog>
     <el-dialog title="导出数据文件" :visible.sync="showDialogZip" width="35%" center>
@@ -156,20 +175,25 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handleExportZip">确 定</el-button>
+        <el-button type="primary" @click="handleExportZip(dataZip)">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
+import axios from 'axios'
+import qs from 'qs'
 export default {
   name: 'home',
   data() {
     return {
+      documentForm: 'word',
       pageData: {},
       hideRow: false,
       showContent: true,
-      fileUpload: false,
+      multipleExports: false,
+      fileUploadZip: false,
+      fileUploadWord: false,
       fileList: [],
       showDialogZip: false,
       dataZip: {},
@@ -227,7 +251,8 @@ export default {
         label: 'label'
       },
       tableData: [],
-      input1: '',
+      multipIds: [],
+      regulationName: '',
       input2: '',
       input3: '',
       input4: '',
@@ -239,13 +264,13 @@ export default {
       textarea2: '1号堆屏蔽冷却水系统用于完成以下基本功能',
       textarea3: '无',
       typeOptions: [{
-        value: 'run',
+        value: 'normal',
         label: '运行规程'
       }, {
         value: 'fault',
         label: '故障规程'
       }],
-      typeValue: '',
+      regulationTypes: '',
       symbolOptions: [{
         value: 'equal',
         label: '='
@@ -265,12 +290,33 @@ export default {
   // },
   // mounted() {},
   created() {
-    this.render()
+    this.renderList()
   },
   methods: {
-    submitUpload() {
-      // this.$refs.upload.submit();
-      this.showContent = false;
+    submitUploadZip() {
+      this.$refs.uploadZip.submit();
+      if (this.fileList.length < 1) {
+        this.$message.success("请选择文件！");
+      }
+      this.fileUploadZip = false;
+    },
+    submitUploadWord() {
+      this.$refs.uploadWord.submit();
+      this.fileUploadWord = false;
+    },
+    handleZipFileError: function (err, file) {
+      // alert("文件上传走丢了。。");
+    },
+    handleZipFileSuccess: function (res, file) {
+      console.log(file)
+      this.$message.success("上传文件成功！");
+    },
+    beforeZipFileUpload: function (file) {
+      this.fileList.push(file)
+      if (file.name.length != 21) {
+        this.$message.error('请上传正确的压缩文件!');
+        return false;
+      }
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);
@@ -281,23 +327,106 @@ export default {
     handleClick(row) {
       console.log(row);
     },
+    //删除数据
+    handleDelete(row) {
+      let that = this;
+      this.$confirm('确认删除数据?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        showCancelButton: false,
+        center: true,
+        type: 'warning'
+      }).then(() => {
+        axios({
+          url: '/regulations/regulations',
+          method: 'delete',
+          params: {
+            id: row.id
+          }
+        }).then(function (res) {
+          that.$message.success("删除数据成功！");
+          that.renderList()
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      }).catch(() => {
+                 
+      });
+    },
     exportDialog(row) {
       this.showDialogZip = true;
       // console.log(row);
       this.dataZip = row;
     },
-    handleExportZip() {
-      this.$request({
-        url: '/regulations/downloadzip',
-        method: 'post',
-        data: {
-          ids: this.dataZip.id
+    handleExportZip(dataZip) {
+      this.exportZip({ids: dataZip.id})
+      this.showDialogZip = false;
+    },
+    //当前选中记录导出
+    selectedDataExport() {
+      let that = this;
+      let ids = that.multipIds.join();
+      this.$confirm('确认导出当前页的选中记录吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        showCancelButton: false,
+        center: true,
+        type: 'warning'
+      }).then(() => {
+        if (ids.length < 1) {
+          this.$message.error('请选择数据!');
+          return false;
         }
-      }).then((res) => {
-        console.log('res')
-      }).catch((error) => {
-        console.log(error)
-      })
+        switch (that.documentForm) {
+          case 'word':
+            that.exportZip(ids)
+            break
+          case 'zip':
+            that.exportZip({ids: ids})
+            break
+          default:
+            break
+        }
+      }).catch(() => {
+                 
+      });
+    },
+    //所有记录导出
+    allSelectedDataExport() {
+      let that = this;
+      let ids = that.multipIds.join();
+      this.$confirm('确认导出所有查询结果吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        showCancelButton: false,
+        center: true,
+        type: 'warning'
+      }).then(() => {
+        switch (that.documentForm) {
+          case 'word':
+            that.exportZip(ids)
+            break
+          case 'zip':
+            let params = {};
+            if(that.regulationName) {
+              params.name = that.regulationName
+            } else {
+              delete params['name']
+            }
+            if(that.regulationTypes) {
+              params.regulationType = that.regulationTypes
+            } else {
+              delete params['regulationType']
+            }
+            that.exportZip(params)
+            break
+          default:
+            break
+        }
+      }).catch(() => {
+                 
+      });
     },
     handleNodeClick(data) {
       console.log(data);
@@ -305,16 +434,79 @@ export default {
     handleCurrentChange(curPage) {
       // console.log(curPage);
       this.pageData.pageNo = curPage
-      this.render()
+      this.renderList()
     },
-    render(){
+    // 获取选中数据ids
+    handleSelectionChange(val) {
+      let multipleSelection = val;
+      this.multipIds = [];
+      multipleSelection.forEach(item => {
+        this.multipIds.push(item.id)
+      });      
+    },
+    exportZip(param) {
+      axios({
+        url: '/regulations/downloadzip',
+        method: 'post',
+        responseType: 'blob',
+        data: qs.stringify(param)
+      }).then(function (res) {
+        console.log('res',res);
+        let blob = new Blob([res.data], {type: 'application/zip;charset=utf-8'});
+        let contentDisposition = res.headers['content-disposition'];
+        let patt = new RegExp("filename=([^;]+\\.[^\\.;]+);*");
+        let result = patt.exec(contentDisposition);
+        let filename = result[1];
+        let downloadElement = document.createElement('a');
+        let href = window.URL.createObjectURL(blob); //创建下载的链接
+        downloadElement.style.display = 'none';
+        downloadElement.href = href;
+        downloadElement.download =filename.replace(/^\"|\"$/g,'') ; //下载后文件名
+        document.body.appendChild(downloadElement);
+        downloadElement.click(); //点击下载
+        document.body.removeChild(downloadElement); //下载完成移除元素
+        window.URL.revokeObjectURL(href); //释放掉blob对象
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+      // this.$request({
+      //   url: '/regulations/downloadzip',
+      //   method: 'post',
+      //   responseType: 'blob',
+      //   data: {
+      //     ids: this.dataZip.id
+      //   }
+      // }).then((error) => {
+      //   console.log('error')
+      // }).catch((res) => {
+      // })
+    },
+    //查询规程列表
+    searchRegulations() {
+      this.renderList()
+    },
+    renderList() {
+      let search = {
+        pageNo: this.pageData.pageNo || 1,
+        pageCount: 10
+      };
+      if(this.regulationName) {
+        search.name = this.regulationName
+      } else {
+        delete search['name']
+      }
+      if(this.regulationTypes) {
+        search.regulationType = this.regulationTypes
+      } else {
+        delete search['regulationType']
+      }
+
       this.$request({
         url: '/regulations/regulationsPage',
         method: 'get',
-        data: {
-          pageNo: this.pageData.pageNo || 1,
-          pageCount: 10
-        }
+        data: search
       }).then((res) => {  //pageData
         let result = res.data.regulations.list;
         this.pageData.count = res.data.regulations.count;   //总记录数
@@ -357,7 +549,7 @@ div {
   }
   .content {
     text-align: left;
-    margin-top: 30px;
+    margin-top: 30px;    
   }
   .renderData {
     border: 1px solid #797979;

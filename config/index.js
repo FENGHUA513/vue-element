@@ -13,6 +13,7 @@ module.exports = {
     proxyTable: {
         '/regulations': {
             target: 'http://10.10.252.29:12306',
+            // target: 'http://10.10.8.47:12306',
             changeOrigin: true
         }
     },

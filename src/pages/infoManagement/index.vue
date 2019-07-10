@@ -178,6 +178,35 @@
         <el-button type="primary" @click="handleExportZip(dataZip)">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 选中导入数据文件 -->
+    <el-dialog title="导入数据" :visible.sync="dialogImportVisible">
+      <div style="text-align: left;">
+        <el-button type="primary" @click="selectedDataImport">当前页选中记录导入</el-button>
+        <el-button type="primary" @click="allSelectedDataImport">所有记录导入</el-button>
+      </div>
+      <el-table :data="importData" border style="width: 100%;margin:10px 0;" @selection-change="handleImportChange">
+        <el-table-column type="selection" align="center" width="55">
+        </el-table-column>
+        <el-table-column align="center" prop="id" label="id" width="100">
+        </el-table-column>
+        <el-table-column prop="dirName" label="文档详细信息所在目录名称" v-if="hideRow">
+        </el-table-column>
+        <el-table-column align="center" prop="name" label="规程名">
+        </el-table-column>
+        <el-table-column align="center" prop="edition" label="版次" width="100">
+        </el-table-column>
+        <el-table-column align="center" prop="fileCode" label="文档代码" width="100">
+        </el-table-column>
+        <el-table-column align="center" prop="regulationType" label="规程类型" width="100">
+        </el-table-column>
+        <el-table-column align="center" prop="uploadTime" label="上传时间">
+        </el-table-column>
+        <el-table-column align="center" prop="updateTime" label="最新更新时间">
+        </el-table-column>
+      </el-table>
+      <el-pagination align="right" background layout="prev, pager, next" :total="importPageData.count">
+      </el-pagination>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -189,6 +218,7 @@ export default {
     return {
       documentForm: 'word',
       pageData: {},
+      importPageData: {},
       hideRow: false,
       showContent: true,
       multipleExports: false,
@@ -196,6 +226,7 @@ export default {
       fileUploadWord: false,
       fileList: [],
       showDialogZip: false,
+      dialogImportVisible: false,
       dataZip: {},
       formLabelWidth: '120px',
       treeData: [{
@@ -251,7 +282,11 @@ export default {
         label: 'label'
       },
       tableData: [],
-      multipIds: [],
+      importData: [],
+      exportMultipIds: [],
+      importMultipIds: [],
+      txtfileName: '',
+      zipfileName: '',
       regulationName: '',
       input2: '',
       input3: '',
@@ -308,8 +343,15 @@ export default {
       // alert("文件上传走丢了。。");
     },
     handleZipFileSuccess: function (res, file) {
-      console.log(file)
-      this.$message.success("上传文件成功！");
+      // this.$message.success("上传文件成功！");
+      this.dialogImportVisible = true;
+      this.importPageData.count = file.response.data.count;
+      this.txtfileName = file.response.data.txtfileName;
+      this.zipfileName = file.response.data.zipfileName;
+      let list = file.response.data.regulations;
+      if (list instanceof Array && list.length > 0) {
+        this.importData = list;
+      }
     },
     beforeZipFileUpload: function (file) {
       this.fileList.push(file)
@@ -317,6 +359,24 @@ export default {
         this.$message.error('请上传正确的压缩文件!');
         return false;
       }
+    },
+    //选中记录导入
+    selectedDataImport() {
+      if (this.importMultipIds.length < 1) {
+        this.$message.error("请选择导入的数据！");
+        return false;
+      }
+      let params = {};
+      params.txtfileName = this.txtfileName;
+      params.zipfileName = this.zipfileName;
+      params.ids = this.importMultipIds.join();
+      this.selectedImport(params)
+    },
+    allSelectedDataImport() {
+      let params = {};
+      params.txtfileName = this.txtfileName;
+      params.zipfileName = this.zipfileName;
+      this.selectedImport(params)
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);
@@ -366,7 +426,7 @@ export default {
     //当前选中记录导出
     selectedDataExport() {
       let that = this;
-      let ids = that.multipIds.join();
+      let ids = that.exportMultipIds.join();
       this.$confirm('确认导出当前页的选中记录吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -395,7 +455,7 @@ export default {
     //所有记录导出
     allSelectedDataExport() {
       let that = this;
-      let ids = that.multipIds.join();
+      let ids = that.exportMultipIds.join();
       this.$confirm('确认导出所有查询结果吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -436,13 +496,42 @@ export default {
       this.pageData.pageNo = curPage
       this.renderList()
     },
-    // 获取选中数据ids
+    // 获取选中导出数据ids
     handleSelectionChange(val) {
       let multipleSelection = val;
-      this.multipIds = [];
+      this.exportMultipIds = [];
       multipleSelection.forEach(item => {
-        this.multipIds.push(item.id)
-      });      
+        this.exportMultipIds.push(item.id)
+      });
+    },
+    // 获取选中导入数据ids
+    handleImportChange(val) {
+      let multipleSelection = val;
+      this.importMultipIds = [];
+      multipleSelection.forEach(item => {
+        this.importMultipIds.push(item.id)
+      });
+    },
+    //选中数据导入api
+    selectedImport(param) {
+      let that = this;
+      axios({
+        url: '/regulations/dataimport',
+        method: 'post',
+        data: qs.stringify(param)
+      }).then(function (res) {
+        that.$alert('<strong>'+ res.data.message +'</strong>', '', {
+          dangerouslyUseHTMLString: true,
+          center: true,
+          confirmButtonText: '确定',
+          callback: action => {
+            
+          }
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     },
     exportZip(param) {
       axios({
